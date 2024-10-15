@@ -409,6 +409,7 @@ export class MatchHistoryTabsRendererModule extends LeagueAkariRendererModule {
     const lc = useLcuConnectionStore()
     const eds = useExternalDataSourceStore()
     const ta = useTgpApiStore()
+    const summoner = useSummonerStore()
 
     const tab = mh.getTab(unionId)
 
@@ -500,7 +501,7 @@ export class MatchHistoryTabsRendererModule extends LeagueAkariRendererModule {
         )
 
         // 加载 TGP 对局列表
-        if (ta.settings.enabled && !ta.settings.expired && tab.data.summoner) {
+        if (ta.settings.enabled && !ta.settings.expired && tab.data.summoner && (tab.data.summoner.puuid === summoner.me.puuid || tab.data.summoner.privacy !== 'PRIVATE')) { // 这里可能登录的QQ不是游戏账号
           const players = await tam.searchPlayer(`${tab.data.summoner.gameName}#${tab.data.summoner.tagLine}`)
           if (players && players[0]) {
             const battles = await tam.getBattleList(players[0], page, pageSize, queueFilter)
@@ -512,7 +513,7 @@ export class MatchHistoryTabsRendererModule extends LeagueAkariRendererModule {
                 }
               })
             } else {
-              laNotification.warn('拉取WeGame数据异常', `WeGame找不到相关战绩！`)
+              laNotification.warn('拉取WeGame数据异常', `找不到[${tab.data.summoner.gameName}]相关WeGame战绩！`)
             }
           }
         }

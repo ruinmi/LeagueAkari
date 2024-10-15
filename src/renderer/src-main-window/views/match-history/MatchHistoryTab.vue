@@ -268,7 +268,10 @@
               v-if="!isSelf && tab.summoner && tab.summoner.privacy === 'PRIVATE'"
             >
               <div class="left-content-item-title">生涯隐藏</div>
-              <div class="left-content-item-content">该玩家设置了生涯不可见</div>
+              <div class="left-content-item-content">
+                <div v-if="ta.settings.enabled && !ta.settings.expired" style="font-weight: 600; color: #ffa349">无法其获取WeGame战绩</div>
+                该玩家设置了生涯不可见
+              </div>
             </div>
             <div class="left-content-item tagged-player" v-if="!isSelf && tab.savedInfo?.tag">
               <div class="left-content-item-title">已被标记的玩家</div>

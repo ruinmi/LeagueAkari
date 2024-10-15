@@ -278,13 +278,14 @@
       </NPopover>
       <NPopover
         :keep-alive-on-hover="false"
-        v-if="summoner?.privacy === 'PRIVATE' && !isSelf"
+        v-if="summoner?.privacy === 'PRIVATE'"
         :delay="50"
       >
         <template #trigger>
           <div class="tag privacy-private">生涯隐藏</div>
         </template>
         <div class="popover-text">
+          <div v-if="ta.settings.enabled && !ta.settings.expired" style="font-weight: 600; color: #ffa349">[无法其获取WeGame战绩]</div>
           该玩家设置了生涯为隐藏。这意味着他人无法查看该玩家的个人主页，包括战绩、成就点数等。另外，也不能观战该玩家
         </div>
       </NPopover>
@@ -465,6 +466,7 @@ import {
   PRE_MADE_TEAM_COLORS,
   RANKED_MEDAL_MAP
 } from './ongoing-game-utils'
+import { useTgpApiStore } from '@renderer-shared/modules/tgp-api/store'
 
 const { puuid, analysis, matchHistory, position, preMadeTeamId, summoner, rankedStats } =
   defineProps<{
@@ -511,6 +513,7 @@ onDeactivated(() => {
 
 const gameData = useGameDataStore()
 const app = useAppStore()
+const ta = useTgpApiStore()
 
 const FREQUENT_USED_CHAMPIONS_MAX_COUNT = 9
 

@@ -125,6 +125,7 @@ export class TgpLoginManager {
   }
 }
 
+// TODO 可能会触发验证码
 export class TgpApi {
   private _tgpTicket: string | null = null
   private _tgpId: string | null = null

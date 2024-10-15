@@ -919,7 +919,7 @@ export class CoreFunctionalityModule extends MobxBasedBasicModule {
           })
 
           // 异步加载 TGP 对局列表
-          if (this._tam.state.settings.enabled && !this._tam.state.settings.expired && player.summoner) {
+          if (this._tam.state.settings.enabled && !this._tam.state.settings.expired && player.summoner && (player.summoner.puuid === me.puuid || player.summoner.privacy !== 'PRIVATE')) {
             const players = await this._tam.searchPlayer(`${player.summoner.gameName}#${player.summoner.tagLine}`)
             if (players && players[0]) {
               const battles = await this._tam.getBattleList(players[0], 1, this.state.settings.matchHistoryLoadCount, queueId)
@@ -935,7 +935,7 @@ export class CoreFunctionalityModule extends MobxBasedBasicModule {
 
                 this.sendEvent('update/ongoing-player/match-history', puuid, withDetailedFields)
               } else {
-                this._mwm.notify.warn('core-functionality', '对局中', 'WeGame找不到相关战绩！')
+                this._mwm.notify.warn('core-functionality', '对局中', `找不到[${player.summoner.gameName}]相关WeGame战绩！`)
               }
             }
           }
