@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx'
 
 class TgpApiSettings {
-  enabled: boolean = false
+  enabled: boolean = true
   qq: string = ''
   expired: boolean = true
   tgpId: string = ''

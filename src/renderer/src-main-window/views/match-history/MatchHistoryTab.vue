@@ -648,15 +648,6 @@ watch(
   }
 )
 
-watch(
-  () => ta.settings.expired,
-  (expired) => {
-    if (expired) {
-      laNotification.warn("QQ", "QQ登录信息已失效，请重新登录！")
-    }
-  }
-)
-
 const sgpTagOptions = computed(() => {
   return [
     {

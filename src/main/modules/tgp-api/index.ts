@@ -173,7 +173,7 @@ export class TgpApiModule extends MobxBasedBasicModule {
   }
 
   private async _checkExpiration() {
-    if (this.state.settings.expired) {
+    if (!this.state.settings.expired) {
       this.state.settings.expired = await this._ta.checkExpiration(this.state.settings.qq)
     }
   }

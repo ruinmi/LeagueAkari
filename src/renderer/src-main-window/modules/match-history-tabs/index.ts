@@ -252,7 +252,6 @@ export class MatchHistoryTabsRendererModule extends LeagueAkariRendererModule {
 
     // 战绩页
     if (mh.currentTab) {
-      console.log(5)
       if (ta.settings.enabled && !ta.settings.expired) {
         const match = mh.currentTab.data.matchHistory._gamesMap[gameId]
         if (match.hasTgpScore) {
@@ -501,19 +500,25 @@ export class MatchHistoryTabsRendererModule extends LeagueAkariRendererModule {
         )
 
         // 加载 TGP 对局列表
-        if (ta.settings.enabled && !ta.settings.expired && tab.data.summoner && (tab.data.summoner.puuid === summoner.me.puuid || tab.data.summoner.privacy !== 'PRIVATE')) { // 这里可能登录的QQ不是游戏账号
-          const players = await tam.searchPlayer(`${tab.data.summoner.gameName}#${tab.data.summoner.tagLine}`)
-          if (players && players[0]) {
-            const battles = await tam.getBattleList(players[0], page, pageSize, queueFilter)
-            if (battles && battles.length !== 0) {
-              tab.data.matchHistory.games.forEach((g) => {
-                const battle = battles.find((battle) => g.game.gameId.toString() === battle.game_id)
-                if (battle) {
-                  g.battle = markRaw(battle)
-                }
-              })
-            } else {
-              laNotification.warn('拉取WeGame数据异常', `找不到[${tab.data.summoner.gameName}]相关WeGame战绩！`)
+        if (ta.settings.enabled) {
+          if (ta.settings.expired) {
+            laNotification.warn('WeGame登录信息过期', `QQ登录已过期，请在[设置-通用]中重新登录！`, '', {'duration': 8000})
+          } else if (tab.data.summoner &&
+            ((summoner.me && tab.data.summoner.puuid === summoner.me.puuid) || tab.data.summoner.privacy !== 'PRIVATE')) { // 这里可能登录的QQ不是游戏账号
+            // 通过TGP找到该玩家
+            const players = await tam.searchPlayer(`${tab.data.summoner.gameName}#${tab.data.summoner.tagLine}`)
+            if (players && players[0]) {
+              const battles = await tam.getBattleList(players[0], page, pageSize, queueFilter)
+              if (battles && battles.length !== 0) {
+                tab.data.matchHistory.games.forEach((g) => {
+                  const battle = battles.find((battle) => g.game.gameId.toString() === battle.game_id)
+                  if (battle) {
+                    g.battle = markRaw(battle)
+                  }
+                })
+              } else {
+                laNotification.warn('拉取WeGame数据异常', `找不到[${tab.data.summoner.gameName}]相关WeGame战绩！`)
+              }
             }
           }
         }
