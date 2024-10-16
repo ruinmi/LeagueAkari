@@ -48,6 +48,7 @@ export class TgpApiRendererModule extends StateSyncModule {
       await this.call('set-setting', 'qq', qq)
       await this.call('set-setting', 'tgpId', tgpId)
       await this.call('set-setting', 'tgpTicket', tgpTicket)
+      location.reload()
     }
     return status
   }

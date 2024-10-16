@@ -165,6 +165,7 @@ export class TgpApi {
     )
     this._http.interceptors.response.use(
       (response) => {
+        console.log(response.data.result)
         this._tam.state.settings.setExpired(response.data.result.error_code === 8000102)
         return response;
       },
