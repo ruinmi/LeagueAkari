@@ -13,24 +13,6 @@
         borderWidth: `${ringWidth}px` || '2px'
       }"
     ></div>
-    <div
-      v-else-if="mvp"
-      class="ring"
-      :class="{ round: round }"
-      :style="{
-        borderColor: ringColor || '#f9e600e6',
-        borderWidth: `${ringWidth}px` || '4px'
-      }"
-    ></div>
-    <div
-      v-else-if="svp"
-      class="ring"
-      :class="{ round: round }"
-      :style="{
-        borderColor: ringColor || 'rgba(204,204,204,0.98)',
-        borderWidth: `${ringWidth}px` || '4px'
-      }"
-    ></div>
   </div>
 </template>
 
@@ -43,8 +25,6 @@ defineProps<{
   ring?: boolean
   ringColor?: string
   ringWidth?: number
-  mvp?: boolean | number
-  svp?: boolean | number
 }>()
 </script>
 

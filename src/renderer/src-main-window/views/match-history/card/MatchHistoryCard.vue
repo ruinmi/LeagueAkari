@@ -49,6 +49,8 @@
       <div class="game">
         <div class="mode">
           {{ formattedModeText }}
+          <span v-if="battle?.was_mvp" class="mvp">MVP</span>
+          <span v-else-if="battle?.was_svp" class="svp">SVP</span>
         </div>
         <div
           class="begin-time"
@@ -78,8 +80,6 @@
             <ChampionIcon
               class="champion-icon"
               round
-              :mvp="battle?.was_mvp"
-              :svp="battle?.was_svp"
               :champion-id="self.participant.championId"
               :title="gameData.champions[self.participant.championId]?.name"
             ></ChampionIcon>
@@ -788,6 +788,13 @@ const handleToggleShowDetailedGame = () => {
       color: rgb(92, 169, 241);
     }
 
+    .mvp {
+      color: rgb(251, 198, 0);
+      padding: 2px;
+      background-color: #7f7f7f45;
+      border-radius: 4px;
+    }
+
     .result {
       color: rgb(92, 169, 241);
     }
@@ -809,6 +816,13 @@ const handleToggleShowDetailedGame = () => {
   .game {
     .mode {
       color: rgb(233, 96, 37);
+    }
+
+    .svp {
+      color: rgb(255, 255, 255);
+      padding: 2px;
+      background-color: #7f7f7f45;
+      border-radius: 4px;
     }
 
     .result {

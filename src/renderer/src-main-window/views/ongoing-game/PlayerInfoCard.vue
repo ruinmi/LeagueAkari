@@ -412,14 +412,15 @@
                   : emits('showGameById', item.game.gameId, puuid)
             "
           >
-            <ChampionIcon :ring-width="2" :mvp="item.battle?.was_mvp" :svp="item.battle?.was_svp" :champion-id="item.selfParticipant.championId" class="champion-icon" />
+            <ChampionIcon :ring-width="2" :champion-id="item.selfParticipant.championId" class="champion-icon" />
             <div class="queue-name-date">
               <div class="queue-name">
                 {{ gameData.queues[item.game.queueId]?.name || item.game.queueId }}
               </div>
               <div class="line2">
                 {{ dayjs(item.game.gameCreation).format('MM-DD HH:mm') }}
-                <span class="win-lose">{{ getWinResultText(item) }}</span>
+                <span class="mvp" v-if="item.battle?.was_mvp">MVP</span>
+                <span class="svp" v-else-if="item.battle?.was_svp">SVP</span>
               </div>
             </div>
             <div class="kda">
@@ -973,6 +974,22 @@ const matches = computed(() => {
 
     .win-lose {
       margin-left: 4px;
+    }
+
+    .mvp {
+      margin-left: 2px;
+      color: rgb(251, 198, 0);
+      padding: 1px;
+      background-color: #7f7f7f45;
+      border-radius: 2px;
+    }
+
+    .svp {
+      margin-left: 2px;
+      color: rgb(255, 255, 255);
+      padding: 1px;
+      background-color: #7f7f7f45;
+      border-radius: 2px;
     }
 
     .champion-icon {
