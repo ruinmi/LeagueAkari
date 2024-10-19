@@ -5,7 +5,7 @@ import { RankedStats } from '@shared/types/lcu/ranked'
 import { SummonerInfo } from '@shared/types/lcu/summoner'
 import { defineStore } from 'pinia'
 import { markRaw } from 'vue'
-import { Battle, BattleDetail } from '@shared/data-sources/tgp/types'
+import { Battle, BattleDetail, Player } from '@shared/data-sources/tgp/types'
 
 /**
  * 通用带状态的战绩数据
@@ -80,6 +80,9 @@ export interface TabState {
 
   /** 缓存展开按钮获取的TGP评分 */
   detailedBattleCache: Map<number, BattleDetail>
+
+  /** 缓存TGP找到的玩家 */
+  tgpPlayerCache: Map<string, Player>
 
   /** 加载中状态 */
   loading: {

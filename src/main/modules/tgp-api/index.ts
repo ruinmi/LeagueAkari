@@ -42,6 +42,8 @@ export class TgpApiModule extends MobxBasedBasicModule {
     this._setupMethodCall()
     this._maintainTgpId()
     this._maintainTgpTicket()
+    this._maintainPsKey()
+    this._maintainQQ()
     await this._checkExpiration()
     this._logger.info('初始化完成')
   }
@@ -67,11 +69,15 @@ export class TgpApiModule extends MobxBasedBasicModule {
       {
         key: 'tgpTicket',
         defaultValue: this.state.settings.tgpTicket
+      },
+      {
+        key: 'pskey',
+        defaultValue: this.state.settings.pskey
       }
     ])
 
     const settings = await this.readSettings()
-    runInAction(() => {
+    runInAction(() => { 
       settings.forEach((s) => set(this.state.settings, s.settingItem, s.value))
     })
 
@@ -102,7 +108,7 @@ export class TgpApiModule extends MobxBasedBasicModule {
     return tgpPlayers.players
   }
 
-  async getBattleList(player: Player, page: number, pageSize: number, sgpQueueFilter: number | null) {
+  async getBattleList(player: Player, page: number, pageSize: number, sgpQueueFilter: number | null, isSelf: boolean = false) {
     // TODO 所有队列，TGP中无训练模式，导致获取不一致
     const maxPageSize = 10
     let allBattles: Battle[] = []
@@ -115,7 +121,7 @@ export class TgpApiModule extends MobxBasedBasicModule {
 
     while (remainingBattles > 0) {
       const currentSize = Math.min(remainingBattles, maxPageSize)
-      const tgpBattles = (await this._ta.getBattleList(player, currentOffset, currentSize, filter)).data
+      const tgpBattles = (await this._ta.getBattleList(player, currentOffset, currentSize, filter, isSelf)).data
 
       allBattles = allBattles.concat(tgpBattles.battles)
 
@@ -167,6 +173,26 @@ export class TgpApiModule extends MobxBasedBasicModule {
       () => this.state.settings.tgpId,
       (id) => {
         this._ta.setTgpId(id)
+      },
+      { fireImmediately: true }
+    )
+  }
+
+  private _maintainPsKey() {
+    this.reaction(
+      () => this.state.settings.pskey,
+      (pskey) => {
+        this._ta.setPskey(pskey)
+      },
+      { fireImmediately: true }
+    )
+  }
+
+  private _maintainQQ() {
+    this.reaction(
+      () => this.state.settings.qq,
+      (qq) => {
+        this._ta.setQQ(qq)
       },
       { fireImmediately: true }
     )

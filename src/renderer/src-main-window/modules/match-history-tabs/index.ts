@@ -506,9 +506,19 @@ export class MatchHistoryTabsRendererModule extends LeagueAkariRendererModule {
           } else if (tab.data.summoner &&
             ((summoner.me && tab.data.summoner.puuid === summoner.me.puuid) || tab.data.summoner.privacy !== 'PRIVATE')) { // 这里可能登录的QQ不是游戏账号
             // 通过TGP找到该玩家
-            const players = await tam.searchPlayer(`${tab.data.summoner.gameName}#${tab.data.summoner.tagLine}`)
-            if (players && players[0]) {
-              const battles = await tam.getBattleList(players[0], page, pageSize, queueFilter)
+            const playerName = summonerName(tab.data.summoner.gameName, tab.data.summoner.tagLine)
+            let player
+            if (tab.data.tgpPlayerCache.has(playerName)) {
+              player = tab.data.tgpPlayerCache.get(playerName)
+            } else {
+              const players = await tam.searchPlayer(playerName)
+              if (players && players.length > 0) {
+                player = players[0]
+              }
+            }
+
+            if (player) {
+              const battles = await tam.getBattleList(player, page, pageSize, queueFilter)
               if (battles && battles.length !== 0) {
                 tab.data.matchHistory.games.forEach((g) => {
                   const battle = battles.find((battle) => g.game.gameId.toString() === battle.game_id)
@@ -709,6 +719,7 @@ export class MatchHistoryTabsRendererModule extends LeagueAkariRendererModule {
       },
       detailedGamesCache: markRaw(new Map()),
       detailedBattleCache: markRaw(new Map()),
+      tgpPlayerCache: markRaw(new Map()),
       loading: {
         isLoadingSummoner: false,
         isLoadingMatchHistory: false,

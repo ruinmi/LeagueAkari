@@ -129,6 +129,8 @@ export class TgpLoginManager {
 export class TgpApi {
   private _tgpTicket: string | null = null
   private _tgpId: string | null = null
+  private _pskey: string | null = null
+  private _qq: string | null = null
 
   setTgpTicket(ticket: string | null) {
     this._tgpTicket = ticket
@@ -136,6 +138,14 @@ export class TgpApi {
 
   setTgpId(id: string | null) {
     this._tgpId = id
+  }
+
+  setPskey(pskey: string | null) {
+    this._pskey = pskey
+  }
+
+  setQQ(qq: string | null) {
+    this._qq = qq
   }
 
   private _http = axios.create({
@@ -156,7 +166,7 @@ export class TgpApi {
     })
     this._http.interceptors.request.use(
       (config) => {
-        config.headers['Cookie'] = `tgp_id=${this._tgpId}; tgp_ticket=${this._tgpTicket}`
+        config.headers['Cookie'] = `p_uni=o${this._qq}; p_skey=${this._pskey}; tgp_id=${this._tgpId}; tgp_ticket=${this._tgpTicket}; tgp_env=online; tgp_user_type=0; client_type=1; region=CN`
         return config
       },
       (error) => {
@@ -176,7 +186,7 @@ export class TgpApi {
   }
 
   async checkExpiration(qq: string) {
-    const payload = { area: 1, game_id: qq }
+    const payload = { account_type: 1, area: 1, id: qq, from_src: 'lol_helper' }
     const data = (await this._http.post('/GetSummonerInfo', payload)).data;
     return !data.result || data.result.error_code === 8000102
   }
@@ -185,19 +195,22 @@ export class TgpApi {
     const payload = {
       nickname: nickname,
       page_size: pageSize,
+      tag: 0,
+      from_src: 'lol_helper',
     }
 
     return this._http.post<TgpPlayers>('/SearchPlayer', payload);
   }
 
-  async getBattleList(player: Player, offset: number, count: number, filter: string | undefined) {
+  async getBattleList(player: Player, offset: number, count: number, filter: string | undefined, isSelf: boolean = false) {
     const payload = {
-      account_type: 2,
+      account_type: isSelf ? 1 : 2,
       area: player.area,
-      id: player.openid,
+      id: isSelf ? this._qq : player.openid,
       count: count,
       offset: offset,
       filter: filter,
+      from_src: 'lol_helper',
     }
 
     return this._http.post<TgpBattles>('/GetBattleList', payload);
@@ -205,8 +218,10 @@ export class TgpApi {
 
   async getBattleDetail(area: string, gameId: number) {
     const payload = {
-      area,
-      game_id: gameId.toString()
+      account_type: 2,
+      area: area,
+      game_id: gameId.toString(),
+      from_src: 'lol_helper',
     }
 
     return this._http.post<TgpGame>('/GetBattleDetail', payload)

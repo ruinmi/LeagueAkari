@@ -7,7 +7,8 @@ export const useTgpApiStore = defineStore('module:tgp-api', () => {
     qq: '',
     expired: true,
     tgpId: '',
-    tgpTicket: ''
+    tgpTicket: '',
+    pskey: ''
   })
 
   return {

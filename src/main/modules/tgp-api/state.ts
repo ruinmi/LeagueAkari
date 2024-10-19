@@ -6,6 +6,7 @@ class TgpApiSettings {
   expired: boolean = true
   tgpId: string = ''
   tgpTicket: string = ''
+  pskey: string = ''
 
   setEnabled(enabled: boolean) {
     this.enabled = enabled
@@ -25,6 +26,10 @@ class TgpApiSettings {
 
   setTgpTicket(tgpTicket: string) {
     this.tgpTicket = tgpTicket
+  }
+
+  setPskey(pskey: string) {
+    this.pskey = pskey
   }
 
   constructor() {
